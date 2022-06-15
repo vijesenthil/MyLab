@@ -1,0 +1,5 @@
+INSERT INTO users (name, salary) VALUES('AAA', 100.0)
+INSERT INTO users (name, salary) VALUES('EEE', 200.0)
+INSERT INTO users (name, salary) VALUES('CCC', 3000.0)
+INSERT INTO users (name, salary) VALUES('DDD', 40440.0)
+INSERT INTO users (name, salary) VALUES('BBB', 4000.0)

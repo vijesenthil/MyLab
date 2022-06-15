@@ -15,8 +15,6 @@ public class CsvUtility {
     private static final String NAME = "Name";
     private static final String SALARY = "Salary";
 
-    static String[] HEADERS = {NAME, SALARY};
-
     public static boolean isCsvFormat(MultipartFile file) {
         if (!TYPE.equals(file.getContentType())) {
             return false;

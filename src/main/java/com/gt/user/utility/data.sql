@@ -1,5 +1,0 @@
-INSERT INTO users (id, name. salary) VALUES(1, "AAA", 100)
-INSERT INTO users (id, name. salary) VALUES(2, "BBB", 200)
-INSERT INTO users (id, name. salary) VALUES(3, "CCC", 300)
-INSERT INTO users (id, name. salary) VALUES(4, "DDD", 400)
-INSERT INTO users (id, name. salary) VALUES(5, "EEE", 500)
