@@ -56,3 +56,9 @@ Return success or failure. 1 if successful and 0 if failure. If failure, HTTP st
 - User name must be unique in the system. If there is already another user with the same name in the database during loading, the record in the database is replaced with the data from the file.
 - The database should be pre-loaded with seed data on first invocation of the application.
 - Bonus: It is not required but desirable to be able to process concurrent upload requests simultaneously.
+
+### Run Instructions
+- JDK 17 is required
+- Run through IDE
+  - run `UserPayrollSystem.java` through Eclipse/Intellij
+- Hit http endpoints /users, /upload using POSTMAN
