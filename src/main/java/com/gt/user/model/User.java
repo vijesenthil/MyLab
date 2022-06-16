@@ -1,5 +1,7 @@
 package com.gt.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -7,6 +9,7 @@ import java.util.Objects;
 @Table(name = "users")
 public class User {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

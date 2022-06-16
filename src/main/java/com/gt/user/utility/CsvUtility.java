@@ -1,5 +1,6 @@
 package com.gt.user.utility;
 
+import com.gt.user.exception.DataLoadException;
 import com.gt.user.model.User;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -22,10 +23,10 @@ public class CsvUtility {
         return true;
     }
 
-    public static List<User> csvToUsers(InputStream is) {
+    public static List<User> csvToUsers(InputStream is) throws DataLoadException {
         try (BufferedReader fileReader = new BufferedReader((new InputStreamReader(is, "UTF-8")))) {
             CSVParser csvParser = new CSVParser(fileReader,
-                    CSVFormat.DEFAULT.builder()
+                    CSVFormat.DEFAULT.builder().setHeader(NAME, SALARY)
                     .setSkipHeaderRecord(true)
                     .setIgnoreHeaderCase(true)
                     .setIgnoreEmptyLines(true)
@@ -39,7 +40,7 @@ public class CsvUtility {
             }
             return users;
         } catch (IOException e) {
-            throw new RuntimeException("Failed to parse CSV file: " + e.getMessage());
+            throw new DataLoadException("Failed to parse CSV file: ", e);
         }
     }
 }

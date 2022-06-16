@@ -1,23 +1,23 @@
 package com.gt.user.response;
 
 public class ResponseMessage {
-    private String success;
+    private int success;
     private String error;
 
-    public ResponseMessage(String success) {
+    public ResponseMessage(int success) {
         this.success = success;
     }
 
-    public ResponseMessage(String success, String error) {
+    public ResponseMessage(int success, String error) {
         this.success = success;
         this.error = error;
     }
 
-    public void setSuccess(String success) {
+    public void setSuccess(int success) {
         this.success = success;
     }
 
-    public String getSuccess() {
+    public int getSuccess() {
         return success;
     }
 

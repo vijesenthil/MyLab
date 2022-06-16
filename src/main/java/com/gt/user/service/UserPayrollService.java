@@ -1,5 +1,7 @@
 package com.gt.user.service;
 
+import com.gt.user.exception.DataLoadException;
+import com.gt.user.exception.UserException;
 import com.gt.user.model.User;
 import com.gt.user.repository.UserRepository;
 import com.gt.user.utility.CsvUtility;
@@ -30,22 +32,29 @@ public class UserPayrollService implements IUserPayrollService {
         if (limit > 0) {
             applyLimit = limit;
         }
-        if (offset != 0) {
-
-        }
         List<User> users = allUsers.stream()
                 .filter(user -> user.getSalary() >= min && user.getSalary() <= max)
                 .limit(applyLimit)
                 .collect(Collectors.toList());
-        if (!"NO_SORT".equals(sort) &&
-                ("NAME".equalsIgnoreCase(sort) || "SALARY".equalsIgnoreCase(sort))) {
-            users.sort(userComparator);
+
+        Comparator<User> nameComparator = (u1, u2) -> u1.getName().compareToIgnoreCase(u2.getName());
+        Comparator<User> salaryComparator = Comparator.comparingDouble(User::getSalary);
+        if ("NAME".equalsIgnoreCase(sort)) {
+            users.sort(nameComparator);
+        } else if("SALARY".equalsIgnoreCase(sort)) {
+            users.sort(salaryComparator);
         }
+        if (offset != 0 && users.size() >= offset) {
+            User toAdd = users.get(offset - 1);
+            users.remove(offset - 1);
+            users.add(0, toAdd);
+        }
+        //users.stream().sorted(nameComparator.thenComparing(salaryComparator));
         return users;
     }
 
     @Override
-    public void saveAllUsers(MultipartFile file) {
+    public void saveAllUsers(MultipartFile file) throws UserException {
         try {
             List<User> users = CsvUtility.csvToUsers(file.getInputStream());
             // validate csv file data
@@ -53,11 +62,22 @@ public class UserPayrollService implements IUserPayrollService {
                     .get()
                     .stream()
                     .filter(user -> user.getSalary() >= 0.0)
+                    .map(user -> findByNameAndDelete(user))
                     .collect(Collectors.toList());
-            saveUsers(userList);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store CSV data: " + e.getMessage());
+            if (null != userList && userList.size() > 0) {
+                saveUsers(userList);
+            }
+        } catch (IOException | DataLoadException e) {
+            throw new UserException("Failed to store CSV data: ", e);
         }
+    }
+
+    private User findByNameAndDelete(User user) {
+        User byName = userRepository.findByName(user.getName());
+        if (null != byName) {
+            userRepository.delete(byName);
+        }
+        return user;
     }
 
     @Override
@@ -69,17 +89,4 @@ public class UserPayrollService implements IUserPayrollService {
     public void saveUser(User user) {
         userRepository.save(user);
     }
-
-    Comparator<User> userComparator = (o1, o2) -> {
-        // name1 < name2
-        // when name1 != name2 && name1 < name2
-        // or name1 = name2 && salary1 > salary2
-        String name1 = o1.getName().toUpperCase();
-        String name2 = o2.getName().toUpperCase();
-        if (!name1.equals(name2)) {
-            return name1.compareTo(name2);
-        } else {
-            return Double.compare(o1.getSalary(), o2.getSalary());
-        }
-    };
 }
